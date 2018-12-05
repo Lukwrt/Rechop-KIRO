@@ -32,8 +32,12 @@ for i in range(0,n):
         row.append(matrice_dist_temp[i*n+j])
     matrice_dist.append(row)
     
-dist = np.array(matrice_dist)
-
+    
+def index(list,elem):
+    for index in range(len(list)):
+        if elem == list[index]:
+            return index
+            
 
 list_distrib = []
 for elem in matrice_pos:
@@ -45,12 +49,7 @@ for elem in matrice_pos:
         list_distrib.append(index(matrice_pos,elem))
 plt.show()
     
-    
-def index(list,elem):
-    for index in range(len(list)):
-        if elem == list[index]:
-            return index
-            
+
 def Nearest(matrix_pos,matrix_distance,list_distrib):
     C = {}
     for elem in list_distrib:
@@ -94,8 +93,16 @@ def get_sub_matrix(cluster):
 
 def get_k_sub_cluster(k,cluster):
     mat = get_sub_matrix(cluster)
-    return kMedoids(mat,k)
+    M1 , C1 = kMedoids(mat,k)
+    for k in range(len(M1)):
+        M1[k] = cluster[M1[k]]
+    for k in range(len(C1)):
+        for w in range(len(C1[k])):
+            C1[k][w] = cluster[C1[k][w]]
+    return M1, C1
     
+
+M1 , C1 = get_k_sub_cluster(2,C[0])
 ## Test of medoids 
 
 import numpy as np
@@ -144,8 +151,6 @@ def kMedoids(D, k, tmax=200):
 ## Transforming mat_pos into an array
 
 matrice_dist = np.asarray(matrice_dist)
-M, C = kMedoids(matrice_dist, 70)
-
     
 import tsp
     
@@ -163,12 +168,6 @@ def chemin_principal(cluster):
         B.append(centers_sorted[A[k]])
     return B
     
-W =[]
-for w in range(len(M)):
-    W2 = ['b']
-    for p in chemin_principal(C[w],M[w]):
-        W2.append(p)
-    W.append(W2)
     
 fichier = open(filename +"/sortie.txt","w")
 for i in range(len(W)):
